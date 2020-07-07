@@ -5,4 +5,4 @@
 *pycache*
 *egg-info*
 tmp/*
-*db/*
+db/*
