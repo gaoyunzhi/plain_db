@@ -32,6 +32,9 @@ class DB(object):
 		oldValue = self.items.get(key, 0)
 		self.update(key, oldValue + value)
 
+	def get(self, key):
+		return self.items.get(key)
+
 	def save(self):
 		lines = [key + ' ' + str(self.items[key]) for key in self.items]
 		lines.sort()
