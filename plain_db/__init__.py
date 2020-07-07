@@ -3,7 +3,6 @@
 
 name = 'plain_db'
 import os
-import sys
 
 def getFile(fn):
 	result = {}
