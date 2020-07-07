@@ -4,50 +4,44 @@
 name = 'plain_db'
 import os
 import sys
-import hashlib
-import requests
-import re
-import time
 
-def getUrlContent(url, headers = {}, mode = '', sleep = 0):
-	headers['method'] = headers.get('method', 'GET')
-	headers['accept'] = headers.get('accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,image/apng,*/*;q=0.8,application/signed-exchange;v=b3')
-	headers['user-agent'] = headers.get('user-agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36')
-	time.sleep(sleep)
-	r = requests.get(url, headers=headers)
-	if mode != 'b':
-		r.encoding = 'utf-8'
-		return r.text
-	return r.content
-	
-def getFileName(url):
-	h = hashlib.sha224(url.encode('utf-8')).hexdigest()[:3]
-	k = re.sub(r'\W+', '', url.strip('/').split('/')[-1].split('.')[0])[:10]
-	return k + '_' + h
+def getFile(fn):
+	result = {}
+	if not os.path.exists(fn):
+		return result
+	with open(fn) as f:
+		for line in f.readlines():
+			line = line.strip()
+			if not line:
+				continue
+			key = line.split()[0]
+			value = int(line[len(key) + 1:])
+			result[key] = value
+	return result
 
-def getFilePath(url):
-	text = url
-	for char in ['=', '&', ',']:
-		text = text.replace(char, '.')
-	ext = os.path.splitext(text)[1] or '.html'
-	if len(ext) > 10:
-		ext = ext[0] + ext[-9:]
-	return 'tmp/' + getFileName(url) + ext
+class DB(object):
+	def __init__(self, name): # first version, int value only
+		self.fn = 'db/' + name
+		self.items = getFile(self.fn)
 
-def cachedContent(url, headers = {}, mode='', sleep = 0):
-	cache = getFilePath(url)
-	try:
-		with open(cache, 'r' + mode) as f:
-			return f.read()
-	except:
-		content = getUrlContent(url, headers, mode, sleep)
-		os.system('mkdir tmp > /dev/null 2>&1')
-		with open(cache, 'w' + mode) as f:
-			f.write(content)
-		return content
+	def update(self, key, value):
+		self.items[key] = value
+		self.save()
 
-def get(url, headers = {}, force_cache=False, mode = '', sleep = 0):
-	if force_cache or 'test' in str(sys.argv):
-		return cachedContent(url, headers, mode, sleep)
-	else:
-		return getUrlContent(url, headers, mode, sleep)
+	def inc(self, key, value):
+		oldValue = self.items.get(key, 0)
+		self.update(key, oldValue + value)
+
+	def save(self):
+		lines = [key + ' ' + str(self.items[key]) for key in self.items]
+		lines.sort()
+		towrite = '\n'.join(lines[limit * start:limit * (start + 1)])
+		if not towrite:
+			return
+		os.system('mkdir db > /dev/null 2>&1')
+		with open(self.fn + 'tmp', 'w') as f:
+			f.write(towrite)
+		os.system('mv %stmp %s' % (self.fn, self.fn))
+
+def load(fn):
+	return DB(fn)

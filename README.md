@@ -6,10 +6,10 @@ Plain txt db
 
 ```
 import plain_db
-existing = plain_db('existing')
-existing.update('abc', 2)
-existing.add('abc', 1)
-existing.get('abc') # 3
+counter = plain_db.load('counter')
+counter.update('abc', 2)
+counter.inc('abc', 1)
+counter.get('abc') # 3
 ```
 
 ## how to install
