@@ -1,12 +1,15 @@
 # plain_db
 
-Library to fetch url, read from cache when testing.
+Plain txt db
 
 ## usage
 
 ```
 import plain_db
-content = plain_db.get(webpage_url)
+existing = plain_db('existing')
+existing.update('abc', 2)
+existing.add('abc', 1)
+existing.get('abc') # 3
 ```
 
 ## how to install

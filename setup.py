@@ -8,7 +8,7 @@ setuptools.setup(
     version="0.0.1",
     author="Yunzhi Gao",
     author_email="gaoyunzhi@gmail.com",
-    description="Library for get url content (cached when testing).",
+    description="Plain txt DB",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/gaoyunzhi/plain_db",
