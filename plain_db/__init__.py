@@ -13,8 +13,8 @@ def getFile(fn):
 			line = line.strip()
 			if not line:
 				continue
-			key = line.split()[0]
-			value = int(line[len(key) + 1:])
+			key = ' '.join(line.split()[:-1])
+			value = int(line.split()[-1])
 			result[key] = value
 	return result
 
