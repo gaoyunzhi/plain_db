@@ -59,8 +59,8 @@ class DB(object):
 			f.write(towrite)
 		os.system('mv %stmp %s' % (self.fn, self.fn))
 
-def load(fn):
-	return DB(fn)
+def load(fn, isIntValue=True):
+	return DB(fn, isIntValue=isIntValue)
 
 class NoValueDB(object):
 	def __init__(self, name):
