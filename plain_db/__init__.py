@@ -4,7 +4,7 @@
 name = 'plain_db'
 import os
 
-def getFile(fn):
+def getFile(fn, isIntValue=True):
 	result = {}
 	if not os.path.exists(fn):
 		return result
@@ -14,14 +14,16 @@ def getFile(fn):
 			if not line:
 				continue
 			key = ' '.join(line.split()[:-1])
-			value = int(line.split()[-1])
+			value = line.split()[-1]
+			if isIntValue:
+				value = int(value)
 			result[key] = value
 	return result
 
 class DB(object):
-	def __init__(self, name): # first version, int value only
+	def __init__(self, name, isIntValue=True): 
 		self.fn = 'db/' + name
-		self.items = getFile(self.fn)
+		self.items = getFile(self.fn, isIntValue=isIntValue)
 
 	def update(self, key, value):
 		if key not in self.items:
