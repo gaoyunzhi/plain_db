@@ -24,6 +24,10 @@ class DB(object):
 		self.items = getFile(self.fn)
 
 	def update(self, key, value):
+		if key not in self.items:
+			self.items[key] = value
+			self.appendSave(key, value)
+			return
 		self.items[key] = value
 		self.save()
 
@@ -33,6 +37,14 @@ class DB(object):
 
 	def get(self, key, default=None):
 		return self.items.get(key) or default
+
+	def appendSave(self, key, value):
+		if len(self.items) == 1:
+			prefix = '\n'
+		else:
+			prefix = ''
+		with open(self.fn, 'a') as f:
+			f.write(prefix + str(key) + ' ' + str(value))
 
 	def save(self):
 		lines = [key + ' ' + str(self.items[key]) for key in self.items]
