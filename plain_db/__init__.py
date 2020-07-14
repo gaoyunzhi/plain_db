@@ -47,3 +47,16 @@ class DB(object):
 
 def load(fn):
 	return DB(fn)
+
+class NoValueDB(object):
+	def __init__(self, name):
+		self._db = DB(name)
+
+	def add(self, key):
+		if self._db.get(key) == 1:
+			return False
+		self._db.update(key, 1)
+		return True
+
+def loadKeyOnlyDB(fn):
+	return NoValueDB(fn)
