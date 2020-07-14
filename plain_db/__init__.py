@@ -40,9 +40,9 @@ class DB(object):
 
 	def appendSave(self, key, value):
 		if len(self.items) == 1:
-			prefix = '\n'
-		else:
 			prefix = ''
+		else:
+			prefix = '\n'
 		with open(self.fn, 'a') as f:
 			f.write(prefix + str(key) + ' ' + str(value))
 
@@ -69,6 +69,9 @@ class NoValueDB(object):
 			return False
 		self._db.update(key, 1)
 		return True
+
+	def items(self):
+		return list(self._db.items.keys())
 
 def loadKeyOnlyDB(fn):
 	return NoValueDB(fn)
