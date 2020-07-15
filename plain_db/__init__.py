@@ -36,6 +36,11 @@ class DB(object):
 		self.items[key] = value
 		self.save()
 
+	def remove(self, key):
+		if key in self.items:
+			del self.items[key]
+			self.save()
+
 	def inc(self, key, value):
 		oldValue = self.items.get(key, 0)
 		self.update(key, oldValue + value)
@@ -78,6 +83,9 @@ class NoValueDB(object):
 			return False
 		self._db.update(key, 1)
 		return True
+
+	def remove(self, key):
+		self._db.remove(key)
 
 	def items(self):
 		return list(self._db.items.keys())
