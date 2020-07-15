@@ -17,7 +17,7 @@ def getFile(fn, isIntValue=True):
 				key = ' '.join(line.split()[:-1])
 				value = int(line.split()[-1])
 			else:
-				key = line[0]
+				key = line.split()[0]
 				value = ' '.join(line.split()[1:])
 			result[key] = value
 	return result
