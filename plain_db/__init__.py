@@ -45,7 +45,7 @@ class DB(object):
 			return self.items[key]
 		if default != None:
 			return default
-		return self.deultValues
+		return self.defaultValues
 
 	def appendSave(self, key, value):
 		if len(self.items) == 1:
