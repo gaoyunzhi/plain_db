@@ -42,11 +42,11 @@ class DB(object):
 
 	def appendSave(self, key, value):
 		if len(self.items) == 1:
-			prefix = ''
-		else:
-			prefix = '\n'
+			with open(self.fn, 'w') as f:
+				f.write(str(key) + ' ' + str(value))
+			return
 		with open(self.fn, 'a') as f:
-			f.write(prefix + str(key) + ' ' + str(value))
+			f.write('\n' + str(key) + ' ' + str(value))
 
 	def save(self):
 		lines = [key + ' ' + str(self.items[key]) for key in self.items]
@@ -77,3 +77,32 @@ class NoValueDB(object):
 
 def loadKeyOnlyDB(fn):
 	return NoValueDB(fn)
+
+class LargeDB(object):
+	def __init__(self, name):
+		self._db = DB(name, isIntValue=False)
+
+	def get(self, key, default):
+		return self._db.get(key, default)
+
+	def update(self, key, value):
+		if self._db.get(key) == value:
+			return
+		self._db.items[key] = value
+		self._db.appendSave(key, value)
+
+	def items(self):
+		return self._db.items.items()
+
+	def getFn(self):
+		return self._db.fn
+
+def loadLargeDB(fn):
+	return LargeDB(fn)
+
+def cleanupLargeDB(fn):
+	f1 = loadLargeDB(fn)
+	f2 = loadLargeDB(fn + 'tmp')
+	for key, value in f1.items():
+		f2.update(key, value)
+	os.system('mv %s %s' % (f2.getFn(), f1.getFn()))
