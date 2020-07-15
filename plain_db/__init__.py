@@ -99,7 +99,7 @@ class LargeDB(object):
 		self._db.appendSave(key, value)
 
 	def items(self):
-		return self._db.items.items()
+		return list(self._db.items.items())
 
 	def keys(self):
 		for key, value in self.items():
