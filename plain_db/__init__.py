@@ -23,9 +23,10 @@ def getFile(fn, isIntValue=True):
 	return result
 
 class DB(object):
-	def __init__(self, name, isIntValue=True): 
+	def __init__(self, name, isIntValue=True, default = None): 
 		self.fn = 'db/' + name
 		self.items = getFile(self.fn, isIntValue=isIntValue)
+		self.defaultValue = default
 
 	def update(self, key, value):
 		if key not in self.items:
@@ -40,7 +41,11 @@ class DB(object):
 		self.update(key, oldValue + value)
 
 	def get(self, key, default=None):
-		return self.items.get(key) or default
+		if key in self.items:
+			return self.items[key]
+		if default != None:
+			return default
+		return self.deultValues
 
 	def appendSave(self, key, value):
 		if len(self.items) == 1:
@@ -81,8 +86,8 @@ def loadKeyOnlyDB(fn):
 	return NoValueDB(fn)
 
 class LargeDB(object):
-	def __init__(self, name, isIntValue=False):
-		self._db = DB(name, isIntValue=isIntValue)
+	def __init__(self, name, isIntValue=False, default=None):
+		self._db = DB(name, isIntValue=isIntValue, default = default)
 
 	def get(self, key, default=None):
 		return self._db.get(key, default)
@@ -104,8 +109,8 @@ class LargeDB(object):
 	def getFn(self):
 		return self._db.fn
 
-def loadLargeDB(fn, isIntValue=False):
-	return LargeDB(fn, isIntValue=isIntValue)
+def loadLargeDB(fn, isIntValue=False, default=None):
+	return LargeDB(fn, isIntValue=isIntValue, default = default)
 
 def cleanupLargeDB(fn):
 	f1 = loadLargeDB(fn)
