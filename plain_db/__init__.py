@@ -81,8 +81,8 @@ def loadKeyOnlyDB(fn):
 	return NoValueDB(fn)
 
 class LargeDB(object):
-	def __init__(self, name):
-		self._db = DB(name, isIntValue=False)
+	def __init__(self, name, isIntValue=False):
+		self._db = DB(name, isIntValue=isIntValue)
 
 	def get(self, key, default):
 		return self._db.get(key, default)
