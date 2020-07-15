@@ -99,8 +99,8 @@ class LargeDB(object):
 	def getFn(self):
 		return self._db.fn
 
-def loadLargeDB(fn):
-	return LargeDB(fn)
+def loadLargeDB(fn, isIntValue=False):
+	return LargeDB(fn, isIntValue=isIntValue)
 
 def cleanupLargeDB(fn):
 	f1 = loadLargeDB(fn)
