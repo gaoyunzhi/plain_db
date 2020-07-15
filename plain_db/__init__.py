@@ -96,6 +96,11 @@ class LargeDB(object):
 	def items(self):
 		return self._db.items.items()
 
+	def keys(self):
+		for key, value in self.items():
+			if value:
+				yield key
+
 	def getFn(self):
 		return self._db.fn
 
