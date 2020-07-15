@@ -13,10 +13,12 @@ def getFile(fn, isIntValue=True):
 			line = line.strip()
 			if not line:
 				continue
-			key = ' '.join(line.split()[:-1])
-			value = line.split()[-1]
 			if isIntValue:
-				value = int(value)
+				key = ' '.join(line.split()[:-1])
+				value = int(line.split()[-1])
+			else:
+				key = line[0]
+				value = ' '.join(line.split()[1:])
 			result[key] = value
 	return result
 
