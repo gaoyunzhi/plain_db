@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="plain_db",
-    version="0.0.13",
+    version="0.0.14",
     author="Yunzhi Gao",
     author_email="gaoyunzhi@gmail.com",
     description="Plain txt DB",

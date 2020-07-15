@@ -84,7 +84,7 @@ class LargeDB(object):
 	def __init__(self, name, isIntValue=False):
 		self._db = DB(name, isIntValue=isIntValue)
 
-	def get(self, key, default):
+	def get(self, key, default=None):
 		return self._db.get(key, default)
 
 	def update(self, key, value):
