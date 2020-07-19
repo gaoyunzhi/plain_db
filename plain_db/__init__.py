@@ -118,10 +118,9 @@ class LargeDB(object):
 
 	def update(self, key, value):
 		if self._db.get(key) == value:
-			return False
+			return
 		self._db.items[key] = value
 		self._db.appendSave(key, value)
-		return True
 
 	def items(self):
 		return list(self._db.items.items())
