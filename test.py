@@ -25,8 +25,3 @@ f.update('4', 1)
 print(f.items())
 print(f.get('6'))
 plain_db.cleanupLargeDB('index')
-
-
-f = plain_db.loadLargeDB('index', isIntValue=True, default=5, delayLoad=True)
-f.load()
-print(f.items())
