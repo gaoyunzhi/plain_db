@@ -4,8 +4,11 @@
 name = 'plain_db'
 import os
 
-def getFile(fn, isIntValue=True):
-	result = {}
+def getFile(fn, result = None, isIntValue=True):
+	if result == None:
+		# need this, otherwise result will be 
+		# persistent between different loads
+		result = {} 
 	if not os.path.exists(fn):
 		return result
 	with open(fn) as f:
@@ -23,10 +26,18 @@ def getFile(fn, isIntValue=True):
 	return result
 
 class DB(object):
-	def __init__(self, name, isIntValue=True, default = None): 
+	def __init__(self, name, isIntValue=True, default = None,
+			delayLoad = False): 
 		self.fn = 'db/' + name
-		self.items = getFile(self.fn, isIntValue=isIntValue)
+		self.isIntValue = isIntValue
+		if not delayLoad:
+			self.items = getFile(self.fn, isIntValue=isIntValue)
+		else:
+			self.items = {}
 		self.defaultValue = default
+
+	def load(self):
+		getFile(self.fn, isIntValue=self.isIntValue, result=self.items)
 
 	def update(self, key, value):
 		if key not in self.items:
@@ -94,8 +105,13 @@ def loadKeyOnlyDB(fn):
 	return NoValueDB(fn)
 
 class LargeDB(object):
-	def __init__(self, name, isIntValue=False, default=None):
-		self._db = DB(name, isIntValue=isIntValue, default = default)
+	def __init__(self, name, isIntValue=False, 
+			default=None, delayLoad=False):
+		self._db = DB(name, isIntValue=isIntValue, 
+			default = default, delayLoad=delayLoad)
+
+	def load(self):
+		self._db.load()
 
 	def get(self, key, default=None):
 		return self._db.get(key, default)
@@ -118,8 +134,9 @@ class LargeDB(object):
 	def getFn(self):
 		return self._db.fn
 
-def loadLargeDB(fn, isIntValue=False, default=None):
-	return LargeDB(fn, isIntValue=isIntValue, default = default)
+def loadLargeDB(fn, isIntValue=False, default=None, delayLoad=False):
+	return LargeDB(fn, isIntValue=isIntValue, default = default,
+		delayLoad = delayLoad)
 
 def cleanupLargeDB(fn):
 	f1 = loadLargeDB(fn)
