@@ -4,7 +4,7 @@
 name = 'plain_db'
 import os
 
-PIECE_LIMIT = 1024 * 1024 * 256
+PIECE_LIMIT = 1024 * 1024 * 128
 
 def getFileSingle(fn, isIntValue=True):
 	result = {}
