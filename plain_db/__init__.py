@@ -36,7 +36,7 @@ def getFile(fn, isIntValue=True):
 		tmp_filename = fn + piece
 		if not os.path.exists(tmp_filename):
 			return result
-		tmp_result = getFileSingle(tmp_filename)
+		tmp_result = getFileSingle(tmp_filename, isIntValue=isIntValue)
 		result.update(tmp_result)
 		piece = nextPiece(piece)
 
