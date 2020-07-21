@@ -123,6 +123,9 @@ class LargeDB(object):
 	def getFn(self):
 		return self._db.fn
 
+	def save_dont_call_in_prod(self):
+		self._db.save()
+
 def loadLargeDB(fn, isIntValue=False, default=None):
 	return LargeDB(fn, isIntValue=isIntValue, default = default)
 
