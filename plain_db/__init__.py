@@ -97,6 +97,7 @@ def loadKeyOnlyDB(fn):
 class LargeDB(object):
 	def __init__(self, name, isIntValue=False, 
 			default=None):
+		self.name = name
 		self._db = DB(name, isIntValue=isIntValue, 
 			default = default)
 
@@ -124,7 +125,10 @@ class LargeDB(object):
 		return self._db.fn
 
 	def save_dont_call_in_prod(self):
-		self._db.save()
+		f2 = loadLargeDB(self.name + 'tmp')
+		for key, value in self.items():
+			f2.update(key, value)
+		os.system('mv %s %s' % (f2.getFn(), self.getFn()))
 
 def loadLargeDB(fn, isIntValue=False, default=None):
 	return LargeDB(fn, isIntValue=isIntValue, default = default)
