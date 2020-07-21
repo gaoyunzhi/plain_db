@@ -4,9 +4,7 @@
 name = 'plain_db'
 import os
 
-PIECE_LIMIT = 1024 * 1024 * 128
-
-def getFileSingle(fn, isIntValue=True):
+def getFile(fn, isIntValue=True):
 	result = {}
 	if not os.path.exists(fn):
 		return result
@@ -24,31 +22,12 @@ def getFileSingle(fn, isIntValue=True):
 			result[key] = value
 	return result
 
-def nextPiece(piece):
-	if piece == '':
-		return '1'
-	return str(int(piece) + 1)
-
-def getFile(fn, isIntValue=True):
-	piece = ''
-	result = {}
-	while True:
-		tmp_filename = fn + piece
-		if not os.path.exists(tmp_filename):
-			return result
-		tmp_result = getFileSingle(tmp_filename, isIntValue=isIntValue)
-		result.update(tmp_result)
-		piece = nextPiece(piece)
-
 class DB(object):
-	def __init__(self, name, isIntValue=True, default = None, 
-			piece_limit = PIECE_LIMIT): 
+	def __init__(self, name, isIntValue=True, default = None): 
 		self.fn = 'db/' + name
 		self.isIntValue = isIntValue
 		self.items = getFile(self.fn, isIntValue=isIntValue)
 		self.defaultValue = default
-		self.current_piece = ''
-		self.piece_limit = piece_limit
 
 	def update(self, key, value):
 		if key not in self.items:
@@ -75,15 +54,12 @@ class DB(object):
 		return self.defaultValue
 
 	def appendSave(self, key, value):
-		current_fn = self.fn + self.current_piece
-		if not os.path.exists(current_fn):
-			with open(current_fn, 'w') as f:
+		if len(self.items) == 1:
+			with open(self.fn, 'w') as f:
 				f.write(str(key) + ' ' + str(value))
-		else:
-			with open(current_fn, 'a') as f:
-				f.write('\n' + str(key) + ' ' + str(value))
-		if os.stat(current_fn).st_size > self.piece_limit:
-			self.current_piece = nextPiece(self.current_piece)
+			return
+		with open(self.fn, 'a') as f:
+			f.write('\n' + str(key) + ' ' + str(value))
 
 	def save(self):
 		lines = [key + ' ' + str(self.items[key]) for key in self.items]
@@ -120,9 +96,9 @@ def loadKeyOnlyDB(fn):
 
 class LargeDB(object):
 	def __init__(self, name, isIntValue=False, 
-			default=None, piece_limit=PIECE_LIMIT):
+			default=None):
 		self._db = DB(name, isIntValue=isIntValue, 
-			default = default, piece_limit=piece_limit)
+			default = default)
 
 	def load(self):
 		self._db.load()
@@ -147,23 +123,12 @@ class LargeDB(object):
 	def getFn(self):
 		return self._db.fn
 
-def loadLargeDB(fn, isIntValue=False, default=None, piece_limit=PIECE_LIMIT):
-	return LargeDB(fn, isIntValue=isIntValue, default = default,
-		piece_limit=piece_limit)
+def loadLargeDB(fn, isIntValue=False, default=None):
+	return LargeDB(fn, isIntValue=isIntValue, default = default)
 
-def cleanupLargeDB(fn, piece_limit = PIECE_LIMIT):
+def cleanupLargeDB(fn):
 	f1 = loadLargeDB(fn)
-	f2 = loadLargeDB(fn + 'tmp', piece_limit = piece_limit)
+	f2 = loadLargeDB(fn + 'tmp')
 	for key, value in f1.items():
 		f2.update(key, value)
-	current_piece = ''
-	while True:
-		if not os.path.exists(f2.getFn() + current_piece):
-			break
-		os.system('mv %s %s' % (f2.getFn() + current_piece, f1.getFn() + current_piece))
-		current_piece = nextPiece(current_piece)
-	while True:
-		if not os.path.exists(f1.getFn() + current_piece):
-			return
-		os.system('rm %s' % (f1.getFn() + current_piece))
-		current_piece = nextPiece(current_piece)
+	os.system('mv %s %s' % (f2.getFn(), f1.getFn()))
