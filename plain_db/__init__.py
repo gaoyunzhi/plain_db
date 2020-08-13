@@ -55,6 +55,7 @@ class DB(object):
 
 	def appendSave(self, key, value):
 		if len(self.items) == 1:
+			os.system('mkdir db > /dev/null 2>&1')
 			with open(self.fn, 'w') as f:
 				f.write(str(key) + ' ' + str(value))
 			return
