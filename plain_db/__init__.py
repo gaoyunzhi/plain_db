@@ -42,6 +42,7 @@ class DB(object):
 		key = str(key)
 		if key in self.items:
 			del self.items[key]
+			print(self.items)
 			self.save()
 
 	def inc(self, key, value):
@@ -71,8 +72,6 @@ class DB(object):
 		lines = [key + ' ' + str(self.items[key]) for key in self.items]
 		lines.sort()
 		towrite = '\n'.join(lines)
-		if not towrite:
-			return
 		os.system('mkdir db > /dev/null 2>&1')
 		with open(self.fn + 'tmp', 'w') as f:
 			f.write(towrite)
