@@ -88,6 +88,13 @@ class NoValueDB(object):
 	def remove(self, key):
 		self._db.remove(key)
 
+	def toggle(self, key):
+		if self._db.get(key):
+			self.remove(key)
+			return False
+		self.add(key)
+		return True
+
 	def items(self):
 		return list(self._db.items.keys())
 
