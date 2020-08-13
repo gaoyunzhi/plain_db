@@ -30,6 +30,7 @@ class DB(object):
 		self.defaultValue = default
 
 	def update(self, key, value):
+		key = str(key)
 		if key not in self.items:
 			self.items[key] = value
 			self.appendSave(key, value)
@@ -38,15 +39,18 @@ class DB(object):
 		self.save()
 
 	def remove(self, key):
+		key = str(key)
 		if key in self.items:
 			del self.items[key]
 			self.save()
 
 	def inc(self, key, value):
+		key = str(key)
 		oldValue = self.items.get(key, 0)
 		self.update(key, oldValue + value)
 
 	def get(self, key, default=None):
+		key = str(key)
 		if key in self.items:
 			return self.items[key]
 		if default != None:
@@ -54,13 +58,14 @@ class DB(object):
 		return self.defaultValue
 
 	def appendSave(self, key, value):
+		key = str(key)
 		if len(self.items) == 1:
 			os.system('mkdir db > /dev/null 2>&1')
 			with open(self.fn, 'w') as f:
-				f.write(str(key) + ' ' + str(value))
+				f.write(key + ' ' + str(value))
 			return
 		with open(self.fn, 'a') as f:
-			f.write('\n' + str(key) + ' ' + str(value))
+			f.write('\n' + key + ' ' + str(value))
 
 	def save(self):
 		lines = [key + ' ' + str(self.items[key]) for key in self.items]
