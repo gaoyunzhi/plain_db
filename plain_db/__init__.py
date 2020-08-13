@@ -42,7 +42,6 @@ class DB(object):
 		key = str(key)
 		if key in self.items:
 			del self.items[key]
-			print(self.items)
 			self.save()
 
 	def inc(self, key, value):

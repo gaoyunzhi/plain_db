@@ -13,7 +13,7 @@ existing = plain_db.loadKeyOnlyDB('existing')
 # print(existing.add(1))
 # print(existing.add(1))
 # print(existing.add(2))
-existing.remove(2)
+# existing.remove(2)
 print(existing.items())
 
 # f = plain_db.loadLargeDB('index1', isIntValue=True, default=5)
