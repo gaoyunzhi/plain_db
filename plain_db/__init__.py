@@ -43,6 +43,8 @@ class DB(object):
 		if key in self.items:
 			del self.items[key]
 			self.save()
+			return True
+		return False
 
 	def inc(self, key, value):
 		key = str(key)
@@ -90,7 +92,7 @@ class NoValueDB(object):
 		return True
 
 	def remove(self, key):
-		self._db.remove(key)
+		return self._db.remove(key)
 
 	def toggle(self, key):
 		if self._db.get(key):
