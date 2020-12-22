@@ -101,6 +101,9 @@ class NoValueDB(object):
 		self.add(key)
 		return True
 
+	def contain(self, key):
+		return self._db.get(key)
+
 	def items(self):
 		return list(self._db.items.keys())
 
